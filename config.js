@@ -14,7 +14,7 @@ module.exports = {
   JWT_SECRET: "hfiuqafhihqihifohqu9573928yr9wfhiakl]KPOJ09DU9W0AU",
 
   //baseURL
-  baseURL: "http://localhost:5000/",
+  baseURL: "https://seenbackend-production.up.railway.app/",
 
   //firebase server key for send notification
   SERVER_KEY: "SERVER_KEY",
