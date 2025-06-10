@@ -17,6 +17,7 @@ const { default: mongoose } = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 const saltRounds = 10;
+const LiveStreamingHistory = require("../liveStreamingHistory/liveStreamingHistory.model");
 // get users list
 exports.index = async (req, res) => {
   try {
@@ -164,18 +165,19 @@ exports.getPopularUser = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, mobileNumber, password } = req.body;
 
-    if (!email || !password) {
+    if ((!email && !mobileNumber) || !password) {
       return res.status(400).json({
         status: false,
-        message: "Email and password are required!",
+        message: "Email or mobile number and password are required!",
         user: {},
       });
     }
 
-    // Find user by email
-    const user = await User.findOne({ email }).populate("level");
+    // Find user by email or mobile number
+    const query = email ? { email } : { mobileNumber };
+    const user = await User.findOne(query).populate("level");
 
     if (!user) {
       return res.status(404).json({
@@ -274,6 +276,20 @@ exports.signup = async (req, res) => {
         });
       }
     }
+    if (mobileNumber) {
+    const existingMobile = await User.exists({
+      mobileNumber: { $regex: new RegExp(`^${mobileNumber}$`, "i") },
+    });
+
+      if (existingMobile) {
+        return res.status(200).json({
+          status: false,
+          message: "Mobile number already registered!",
+          user: {},
+        });
+      }
+    }
+
 
     const randomChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let referralCode = "";
@@ -809,6 +825,86 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
+exports.purchaseHistory = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    if (!userId)
+      return res.status(400).json({ status: false, message: "userId is required" });
+
+    const user = await User.findById(userId);
+    if (!user)
+      return res.status(404).json({ status: false, message: "User does not exist!" });
+
+    const start = req.body.start ? parseInt(req.body.start) : 1;
+    const limit = req.body.limit ? parseInt(req.body.limit) : 10;
+
+    // Fetch Wallet History (all types combined, no type filter)
+    const walletHistory = await Wallet.aggregate([
+      { $match: { userId: user._id } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "otherUserId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          diamond: 1,
+          rCoin: 1,
+          paymentGateway: 1,
+          type: 1,
+          date: 1,
+          userId: "$user._id",
+          userName: "$user.name",
+          isIncome: "$isIncome",
+        },
+      },
+      { $sort: { _id: -1 } },
+      { $skip: (start - 1) * limit },
+      { $limit: limit },
+    ]);
+
+    const walletTotalCount = await Wallet.countDocuments({ userId: user._id });
+
+    // Fetch Live Streaming History
+    const liveStreamingHistory = await LiveStreamingHistory.aggregate([
+      { $match: { userId: user._id } },
+      { $sort: { _id: -1 } },
+      { $skip: (start - 1) * limit },
+      { $limit: limit },
+      {
+        $project: {
+          user: 1,
+          duration: 1,
+          gifts: 1,
+          comments: 1,
+          fans: 1,
+          rCoin: 1,
+          startTime: 1,
+          endTime: 1,
+        },
+      },
+    ]);
+
+    const liveStreamingCount = await LiveStreamingHistory.countDocuments({ userId: user._id });
+
+    return res.status(200).json({
+      status: true,
+      message: "Success!!",
+      walletHistoryTotal: walletTotalCount,
+      liveStreamingHistoryTotal: liveStreamingCount,
+      walletHistory,
+      liveStreamingHistory,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: false, error: error.message || "Server Error" });
+  }
+};
+
 // get user profile of post[feed]
 exports.getProfileUser = async (req, res) => {
   try {
@@ -833,7 +929,7 @@ exports.getProfileUser = async (req, res) => {
     const profileUser = await User.findOne({ ...query })
       .populate("level")
       .select(
-        "name username gender age image country bio followers following video post level isVIP coverImage countryFlagImage uniqueId rCoin diamond"
+        "name email username gender age image country bio followers following video post level isVIP coverImage countryFlagImage uniqueId rCoin diamond"
       );
 
     if (!profileUser)
