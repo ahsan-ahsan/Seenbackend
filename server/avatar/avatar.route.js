@@ -37,7 +37,7 @@ const upload = multer({ storage, fileFilter });
 const checkAccessWithKey = require("../../checkAccess");
 
 // get all sticker
-router.get("/", checkAccessWithKey(), AvatarController.index);
+router.get("/", AvatarController.index);
 
 //create sticker
 router.post("/", checkAccessWithKey(), upload.single("avatar"), AvatarController.store);
