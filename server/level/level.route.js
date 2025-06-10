@@ -15,7 +15,7 @@ const upload = multer({
 // router.use(checkAccessWithSecretKey());
 
 // get level
-router.get("/", checkAccessWithKey(), LevelController.index);
+router.get("/", LevelController.index);
 
 // create level
 router.post("/", checkAccessWithKey(), upload.single("image"), LevelController.store);
