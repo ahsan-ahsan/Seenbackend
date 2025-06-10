@@ -13,7 +13,7 @@ const checkAccessWithKey = require("../../checkAccess");
 // router.use(checkAccessWithKey());
 
 // get user list
-router.get("/getUsers", checkAccessWithKey(), UserController.index);
+router.get("/getUsers",  UserController.index);
 
 // get popular user by followers
 router.get(
@@ -35,11 +35,11 @@ router.post("/user/online", UserController.userIsOnline);
 router.post("/user/search", checkAccessWithKey(), UserController.search);
 
 // get user profile of post[feed]
-router.post("/getUser", checkAccessWithKey(), UserController.getProfileUser);
-
+router.post("/getUser",  UserController.getProfileUser);
+router.get("/user-history", UserController.purchaseHistory);
 //user login and signup
 // router.post("/loginSignup", checkAccessWithKey(), UserController.loginSignup);
-router.post("/user-login", checkAccessWithKey(), UserController.login);
+router.post("/user-login",  UserController.login);
 
 router.post("/user-signup", upload.fields([{ name: 'coverimage' }]), UserController.signup);
 
@@ -75,7 +75,6 @@ router.put(
 // update user detail [android]
 router.post(
   "/user/update",
-  checkAccessWithKey(),
   upload.fields([{ name: "image" }, { name: "coverImage" }]),
   UserController.updateProfile
 );
