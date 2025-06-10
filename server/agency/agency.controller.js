@@ -63,6 +63,35 @@ exports.index = async (req, res) => {
   }
 };
 
+exports.owner = async (req, res) => {
+  try {
+    const agencies = await Agency.find()
+      .populate({
+        path: "users",
+        select: "name email image", // Adjust fields as needed
+      })
+      .populate({
+        path: "agencyOwner",
+        select: "name email image",
+      });
+
+    if (!agencies || agencies.length === 0) {
+      return res
+        .status(200)
+        .json({ status: false, message: "No data found!" });
+    }
+
+    return res
+      .status(200)
+      .json({ status: true, message: "Success!", agencies });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ status: false, error: error.message || "Server Error" });
+  }
+};
+
 // Delete Agency
 exports.destroy = async (req, res) => {
   try {

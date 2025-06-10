@@ -26,7 +26,7 @@ router.post("/", checkAccessWithKey(), upload.single('image'), AgencyController.
 router.patch("/:agencyId", checkAccessWithKey(), upload.single('image'), AgencyController.update);
 router.get("/all", checkAccessWithKey(), AgencyController.index);
 router.delete("/:agencyId",checkAccessWithKey(),AgencyController.destroy);
-
+router.get("/owners",  AgencyController.owner);
 // //svga Add
 // router.post("/svgaAdd", checkAccessWithKey(),   upload.fields([{ name: 'image' }, { name: 'svgaImage' }]), AgencyController.svgaAdd);
 

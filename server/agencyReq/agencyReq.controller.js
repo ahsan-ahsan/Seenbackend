@@ -1,6 +1,6 @@
 const AgencyRequest = require("./agencyReq.model.js");
 const agencyModel = require("../agency/agency.model");
-const userModel = require("../user/user.model");
+const userModel = require("../user/user.model.js");
 
 exports.store = async (req, res) => {
   try {
