@@ -929,7 +929,7 @@ exports.getProfileUser = async (req, res) => {
     const profileUser = await User.findOne({ ...query })
       .populate("level")
       .select(
-        "name email username gender age image country bio followers following video post level isVIP coverImage countryFlagImage uniqueId rCoin diamond"
+        "name email username gender age image country bio followers following video post level isVIP coverImage countryFlagImage uniqueId rCoin diamond spentCoin"
       );
 
     if (!profileUser)
