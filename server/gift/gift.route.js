@@ -13,7 +13,7 @@ const checkAccessWithKey = require('../../checkAccess');
 // router.use(checkAccessWithKey());
 
 // get all gifts
-router.get('/all', checkAccessWithKey(), GiftController.index);
+router.get('/all', GiftController.index);
 
 // get category wise gift
 router.get(
