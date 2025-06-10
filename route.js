@@ -9,6 +9,11 @@ route.use("/admin", AdminRoute);
 const AgencyRoute = require("./server/agency/agency.route");
 route.use("/agency", AgencyRoute);
 
+
+//agency request route
+const AgencyReqRoute = require("./server/agencyReq/agencyReq.route");
+route.use("/agency-request", AgencyReqRoute);
+
 //entryEff route
 const EntryEffRoute = require("./server/entryEff/entryEff.route");
 route.use("/entry-effect", EntryEffRoute);
