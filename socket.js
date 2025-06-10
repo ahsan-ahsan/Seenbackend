@@ -10,7 +10,6 @@ const LiveUser = require('./server/liveUser/liveUser.model');
 const Chat = require('./server/chat/chat.model');
 const ChatTopic = require('./server/chatTopic/chatTopic.model');
 const LiveStreamingHistory = require('./server/liveStreamingHistory/liveStreamingHistory.model');
-const moment = require("moment");
 const config = require("./config");
 const MAX_VIDEO_PARTICIPANTS = 10;
 let videoParticipants = [];
