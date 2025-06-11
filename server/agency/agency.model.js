@@ -9,9 +9,10 @@ function generateUniqueId(length = 5) {
   }
   return result;
 }
+
 const agencySchema = new mongoose.Schema(
   {
-       uniqId: {
+    uniqId: {
       type: String,
       default: () => generateUniqueId(),
       unique: true,
@@ -19,7 +20,10 @@ const agencySchema = new mongoose.Schema(
     image: String,
     agencyName: String,
     agencyTagLine: String,
-    agencyOwner: String,
+    agencyOwner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     users: [
       {
         type: mongoose.Schema.Types.ObjectId,
