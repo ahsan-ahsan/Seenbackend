@@ -72,7 +72,7 @@ exports.owner = async (req, res) => {
       })
       .populate({
         path: "agencyOwner",
-        select: "name email image",
+        select: "name email image uniqueId",
       });
 
     if (!agencies || agencies.length === 0) {
