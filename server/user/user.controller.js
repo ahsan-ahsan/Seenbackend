@@ -929,7 +929,7 @@ exports.getProfileUser = async (req, res) => {
     const profileUser = await User.findOne({ ...query })
       .populate("level")
       .select(
-        "name email username gender age image country bio followers following video post level isVIP coverImage countryFlagImage uniqueId rCoin diamond spentCoin"
+        "name email username gender age image country bio followers following video post level isVIP coverImage countryFlagImage uniqueId rCoin diamond spentCoin spentDiamond"
       );
 
     if (!profileUser)
@@ -1343,6 +1343,7 @@ exports.addLessRcoinDiamond = async (req, res) => {
         // put entry on history in outgoing
         wallet.isIncome = false;
         wallet.diamond = user.diamond - req.body.diamond;
+        user.spentDiamond=user.spentDiamond + req.body.diamond;
       } else {
         // put entry on history in income
         wallet.isIncome = true;
@@ -1367,7 +1368,6 @@ exports.addLessRcoinDiamond = async (req, res) => {
       .json({ status: false, error: error.message || "Server Error" });
   }
 };
-
 //check user plan is expired or not
 const checkPlan = async (userId, res) => {
   try {
@@ -1446,8 +1446,13 @@ const updateLevel = async (userId, res) => {
       coin: -1,
     });
     user.level = level[0]._id;
+    // await level.map(async (data) => {
+    //   if (user.spentCoin <= data.coin) {
+    //     return (user.level = data._id);
+    //   }
+    // });
     await level.map(async (data) => {
-      if (user.spentCoin <= data.coin) {
+      if (user.spentDiamond <= data.coin) {
         return (user.level = data._id);
       }
     });

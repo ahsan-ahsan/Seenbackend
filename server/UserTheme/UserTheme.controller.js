@@ -43,6 +43,7 @@ try {
 
     // Deduct diamonds
     user.diamond -= theme.price;
+      user.spentDiamond= user.spentDiamond + theme.price;
     await user.save();
 
     const UserTheme = await UserThemeModel.create({

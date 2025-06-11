@@ -43,6 +43,7 @@ try {
 
     // Deduct diamonds
     user.diamond -= avatar.price;
+     user.spentDiamond= user.spentDiamond + avatar.price;
     await user.save();
 
     const UserAvatar = await UserAvatarModel.create({

@@ -824,6 +824,7 @@ exports.sendGiftFakeHost = async (req, res) => {
     }
 
     senderUser.diamond -= req.body.coin;
+    user.spentDiamond= user.spentDiamond + req.body.coin;
     senderUser.spentCoin += req.body.coin;
     await senderUser.save();
     console.log("senderUser in Gift send", senderUser);

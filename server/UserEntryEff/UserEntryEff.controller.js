@@ -44,6 +44,7 @@ try {
 
     // Deduct diamonds
     user.diamond -= entryEff.price;
+     user.spentDiamond= user.spentDiamond + entryEff.price;
     await user.save();
 
     const userEntryEff = await UserEntryEff.create({

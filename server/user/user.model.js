@@ -57,6 +57,7 @@ const userSchema = new mongoose.Schema(
     rCoin: { type: Number, default: 0 },
     withdrawalRcoin: { type: Number, default: 0 },
     spentCoin: { type: Number, default: 0 },
+    spentDiamond: { type: Number, default: 0 },
 
     loginType: { type: Number, enum: [0, 1, 2, 3], default: 0 }, //0 : google , 1 : facebook , 2 : quick
     notification: {

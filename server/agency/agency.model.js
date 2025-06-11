@@ -10,6 +10,8 @@ function generateUniqueId(length = 5) {
   return result;
 }
 
+
+
 const agencySchema = new mongoose.Schema(
   {
     uniqId: {
